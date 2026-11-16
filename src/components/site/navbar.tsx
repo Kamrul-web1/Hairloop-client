@@ -154,14 +154,14 @@ function AuthActions({ className }: { className?: string }) {
         variant="ghost"
         nativeButton={false}
         render={<Link href="/sign-in" />}
-        className="h-9 px-4 text-primary hover:bg-white/5 hover:text-primary"
+        className="h-9 rounded-full px-4 text-foreground/80 hover:bg-white/5 hover:text-foreground"
       >
         Sign In
       </Button>
       <Button
         nativeButton={false}
         render={<Link href="/sign-up" />}
-        className="h-9 px-4"
+        className="h-9 rounded-full px-5"
       >
         Get Started
       </Button>
@@ -174,8 +174,8 @@ export function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <header className="sticky top-0 z-50 w-full px-3 pt-3 sm:px-5 sm:pt-4">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 rounded-lg border border-white/10 bg-[#1a1a1f]/95 pr-2 pl-4 shadow-lg shadow-black/30 backdrop-blur-md sm:h-17 sm:pr-3 sm:pl-5">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#0a0a0d]/90 backdrop-blur-md">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:h-17 sm:px-6">
         <Logo />
 
         {/* Desktop nav */}
@@ -256,14 +256,14 @@ export function Navbar() {
                     <SheetClose
                       nativeButton={false}
                       render={<Link href="/sign-in" />}
-                      className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-border bg-transparent text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      className="inline-flex h-10 w-full items-center justify-center rounded-full border border-border bg-transparent text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-foreground"
                     >
                       Sign In
                     </SheetClose>
                     <SheetClose
                       nativeButton={false}
                       render={<Link href="/sign-up" />}
-                      className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
+                      className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
                     >
                       Get Started
                     </SheetClose>
