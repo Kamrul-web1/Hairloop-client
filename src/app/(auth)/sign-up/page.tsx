@@ -4,19 +4,30 @@ import * as React from "react";
 import Link from "next/link";
 import {
   ArrowRightIcon,
+  BriefcaseIcon,
   EyeIcon,
   EyeOffIcon,
   LockIcon,
   MailIcon,
+  SearchIcon,
+  ShieldIcon,
   UserIcon,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import type { UserRole } from "@/lib/user-role";
 
 const fieldClassName =
   "h-11 w-full rounded-lg border border-white/10 bg-black/40 px-3.5 pl-10 text-sm text-white outline-none transition-colors placeholder:text-white/35 focus:border-primary/60 focus:ring-2 focus:ring-primary/30";
 
+const roleOptions: { value: UserRole; label: string; icon: React.ElementType }[] = [
+  { value: "seeker", label: "Seeker", icon: SearchIcon },
+  { value: "recruiter", label: "Recruiter", icon: BriefcaseIcon },
+  { value: "admin", label: "Admin", icon: ShieldIcon },
+];
+
 export default function SignUpPage() {
     const [showPassword, setShowPassword] = React.useState(false);
+    const [role, setRole] = React.useState<UserRole>("seeker");
 
 
 const hendelSingup = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -28,6 +39,16 @@ const hendelSingup = async (event: React.FormEvent<HTMLFormElement>) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
+  const selectedRole = formData.get("role");
+
+  if (
+    selectedRole !== "seeker" &&
+    selectedRole !== "recruiter" &&
+    selectedRole !== "admin"
+  ) {
+    alert("Please select an account type.");
+    return;
+  }
 
   if (password !== confirmPassword) {
     alert("Password does not match!");
@@ -40,6 +61,7 @@ const hendelSingup = async (event: React.FormEvent<HTMLFormElement>) => {
       email,
       password,
       callbackURL: "/",
+      role: selectedRole,
     });
 
   if (error) {
@@ -74,6 +96,43 @@ const hendelSingup = async (event: React.FormEvent<HTMLFormElement>) => {
           </p>
 
           <form onSubmit={hendelSingup} className="mt-7 flex flex-col gap-4">
+            {/* Account type (role) */}
+            <div
+              className="flex flex-col gap-1.5"
+              role="radiogroup"
+              aria-label="Account type"
+            >
+              <span className="text-sm font-medium text-white/80">
+                I am signing up as
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {roleOptions.map(({ value, label, icon: Icon }) => (
+                  <label
+                    key={value}
+                    className={`flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border px-2 py-3 text-xs font-medium transition-colors focus-within:outline-none focus-within:ring-2 focus-within:ring-primary/50 ${
+                      role === value
+                        ? "border-primary/60 bg-primary/15 text-white ring-2 ring-primary/30"
+                        : "border-white/10 bg-black/40 text-white/55 hover:border-white/25 hover:text-white/80"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="role"
+                      value={value}
+                      checked={role === value}
+                      onChange={() => setRole(value)}
+                      className="sr-only"
+                    />
+                    <Icon
+                      className={`size-4 ${role === value ? "text-primary" : ""}`}
+                      aria-hidden
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </div>
+
             {/* Full name */}
             <div className="flex flex-col gap-1.5">
               <label
