@@ -1,4 +1,10 @@
-import { BriefcaseBusinessIcon, StarIcon, TrophyIcon, UsersIcon } from "lucide-react";
+import * as React from "react";
+import {
+  BriefcaseBusinessIcon,
+  StarIcon,
+  TrophyIcon,
+  UsersIcon,
+} from "lucide-react";
 
 const stats = [
   { icon: BriefcaseBusinessIcon, value: "50K", label: "Active Jobs" },
@@ -7,33 +13,35 @@ const stats = [
   { icon: StarIcon, value: "97%", label: "Satisfaction Rate" },
 ] as const;
 
+const cardStyle: React.CSSProperties = {
+  backgroundImage:
+    "linear-gradient(180deg, rgba(33,33,39,0.94) 0%, rgba(14,14,17,0.96) 55%, rgba(9,9,12,0.97) 100%)",
+};
+
 export function Stats() {
   return (
-    <section className="relative mx-auto w-full max-w-7xl px-4 pb-24 sm:px-6">
-      <div className="flex flex-col items-center gap-12">
-        <h2 className="max-w-xl text-center text-2xl font-semibold text-white sm:text-3xl lg:text-4xl">
-          Assisting over 15,000 job seekers find their dream positions.
-        </h2>
-
-        <ul className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => (
-            <li
-              key={stat.label}
-              className="flex min-h-44 flex-col justify-between gap-8 rounded-2xl border border-white/10 bg-gradient-to-b from-[#333338] to-[#0c0c0e] p-6"
-            >
-              <span className="inline-flex size-10 items-center justify-center rounded-lg border border-white/10 bg-white/10">
-                <stat.icon className="size-5 text-white" />
-              </span>
-              <div className="flex flex-col gap-1">
-                <p className="text-4xl font-semibold tracking-tight text-white lg:text-[44px]">
-                  {stat.value}
-                </p>
-                <p className="text-base text-white/70">{stat.label}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <section className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+      <ul className="grid w-full grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+        {stats.map((stat) => (
+          <li
+            key={stat.label}
+            className="flex min-h-[164px] flex-col justify-between gap-8 rounded-2xl border border-white/10 p-5  sm:min-h-[196px] sm:p-6 lg:min-h-[248px] lg:p-7"
+            style={cardStyle}
+          >
+            <span className="inline-flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06]">
+              <stat.icon className="size-5 text-white" />
+            </span>
+            <div className="flex flex-col gap-2">
+              <p className="text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-[56px] lg:leading-none">
+                {stat.value}
+              </p>
+              <p className="text-sm text-white/55 sm:text-base">
+                {stat.label}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
