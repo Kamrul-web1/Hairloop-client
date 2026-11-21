@@ -1,6 +1,6 @@
+
 "use client";
 
-import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -44,11 +45,7 @@ const navLinks = [
 
 function Logo({ className }: { className?: string }) {
   return (
-    <Link
-      href="/"
-      aria-label="HireLoop home"
-      className={className}
-    >
+    <Link href="/" aria-label="HireLoop home" className={className}>
       <Image
         src="/hireloop-logo.png"
         alt="HireLoop"
@@ -71,6 +68,7 @@ function NavLink({
   pathname: string;
 }) {
   const active = pathname === href || pathname.startsWith(`${href}/`);
+
   return (
     <Link
       href={href}
@@ -90,6 +88,7 @@ function UserMenu() {
   const user = session?.user;
   const name = user?.name ?? "User";
   const email = user?.email ?? "";
+
   const initials = name
     .split(" ")
     .map((part) => part[0])
@@ -102,8 +101,12 @@ function UserMenu() {
   const dashboardHref = role ? `/dashboard/${role}` : "/dashboard";
 
   async function handleSignOut() {
-    await signOut();
-    router.push("/");
+    const result = await signOut();
+
+    if (!result.error) {
+      router.push("/");
+      router.refresh();
+    }
   }
 
   return (
@@ -119,30 +122,42 @@ function UserMenu() {
           <AvatarFallback>{initials || "HL"}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-60">
-        <DropdownMenuLabel className="px-1.5 py-1">
-          <span className="block truncate text-sm font-medium text-foreground">
-            {name}
-          </span>
-          <span className="block truncate text-xs font-normal text-muted-foreground">
-            {email}
-          </span>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link href={dashboardHref} />}>
-          <LayoutDashboardIcon />
-          Dashboard
-        </DropdownMenuItem>
-        <DropdownMenuItem render={<Link href={`${dashboardHref}/settings`} />}>
-          <SettingsIcon />
-          Settings
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-          <LogOutIcon />
-          Log out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+
+     
+<DropdownMenuContent align="end" className="w-60">
+  <DropdownMenuGroup>
+    <DropdownMenuLabel className="px-1.5 py-1">
+      <span className="block truncate text-sm font-medium text-foreground">
+        {name}
+      </span>
+      <span className="block truncate text-xs font-normal text-muted-foreground">
+        {email}
+      </span>
+    </DropdownMenuLabel>
+  </DropdownMenuGroup>
+
+  <DropdownMenuSeparator />
+
+  <DropdownMenuItem render={<Link href={dashboardHref} />}>
+    <LayoutDashboardIcon />
+    Dashboard
+  </DropdownMenuItem>
+
+  <DropdownMenuItem
+    render={<Link href={`${dashboardHref}/settings`} />}
+  >
+    <SettingsIcon />
+    Settings
+  </DropdownMenuItem>
+
+  <DropdownMenuSeparator />
+
+  <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
+    <LogOutIcon />
+    Log out
+  </DropdownMenuItem>
+</DropdownMenuContent>
+
     </DropdownMenu>
   );
 }
@@ -158,6 +173,7 @@ function AuthActions({ className }: { className?: string }) {
       >
         Sign In
       </Button>
+
       <Button
         nativeButton={false}
         render={<Link href="/sign-up" />}
@@ -171,10 +187,14 @@ function AuthActions({ className }: { className?: string }) {
 
 export function Navbar() {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, isPending } = useSession();
+console.log("Navbar Session:", session);
+console.log("Session Pending:", isPending);
+
+  const isLoggedIn = !!session?.user;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10  backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:h-17 sm:px-6">
         <Logo />
 
@@ -189,12 +209,14 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <div className="h-6 w-px " />
-          {session?.user ? (
-            <UserMenu />
-          ) : (
-            <AuthActions className="flex items-center gap-1" />
-          )}
+          <div className="h-6 w-px" />
+
+          {!isPending &&
+            (isLoggedIn ? (
+              <UserMenu />
+            ) : (
+              <AuthActions className="flex items-center gap-1" />
+            ))}
         </div>
 
         {/* Mobile menu */}
@@ -206,21 +228,27 @@ export function Navbar() {
             >
               <MenuIcon className="size-5" />
             </SheetTrigger>
+
             <SheetContent
               side="right"
               className="w-80 gap-0 border-white/10 bg-card p-0"
             >
               <SheetHeader className="border-b border-white/10 p-4">
-                <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+                <SheetTitle className="sr-only">
+                  Navigation menu
+                </SheetTitle>
                 <Logo className="flex" />
               </SheetHeader>
+
               <nav
                 aria-label="Mobile navigation"
                 className="flex flex-col gap-1 p-3"
               >
                 {navLinks.map((link) => {
                   const active =
-                    pathname === link.href || pathname.startsWith(`${link.href}/`);
+                    pathname === link.href ||
+                    pathname.startsWith(`${link.href}/`);
+
                   return (
                     <SheetClose
                       key={link.href}
@@ -231,44 +259,49 @@ export function Navbar() {
                           aria-current={active ? "page" : undefined}
                         />
                       }
-                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/70 transition-colors hover:bg-white/5 hover:text-foreground data-[active=true]: data-[active=true]:text-foreground"
+                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/70 transition-colors hover:bg-white/5 hover:text-foreground data-[active=true]:text-foreground"
+                      data-active={active}
                     >
                       {link.label}
                     </SheetClose>
                   );
                 })}
               </nav>
+
               <SheetFooter className="flex-col items-stretch gap-2 border-t border-white/10 p-4">
-                {session?.user ? (
-                  <div className="flex items-center gap-3">
-                    <UserMenu />
-                    <p className="min-w-0 flex-1 truncate text-sm">
-                      <span className="block truncate font-medium">
-                        {session.user.name}
-                      </span>
-                      <span className="block truncate text-xs text-muted-foreground">
-                        {session.user.email}
-                      </span>
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <SheetClose
-                      nativeButton={false}
-                      render={<Link href="/sign-in" />}
-                      className="inline-flex h-10 w-full items-center justify-center rounded-full border border-border bg-transparent text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      Sign In
-                    </SheetClose>
-                    <SheetClose
-                      nativeButton={false}
-                      render={<Link href="/sign-up" />}
-                      className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
-                    >
-                      Get Started
-                    </SheetClose>
-                  </>
-                )}
+                {!isPending &&
+                  (isLoggedIn ? (
+                    <div className="flex items-center gap-3">
+                      <UserMenu />
+
+                      <p className="min-w-0 flex-1 truncate text-sm">
+                        <span className="block truncate font-medium">
+                          {session.user.name}
+                        </span>
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {session.user.email}
+                        </span>
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <SheetClose
+                        nativeButton={false}
+                        render={<Link href="/sign-in" />}
+                        className="inline-flex h-10 w-full items-center justify-center rounded-full border border-border bg-transparent text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        Sign In
+                      </SheetClose>
+
+                      <SheetClose
+                        nativeButton={false}
+                        render={<Link href="/sign-up" />}
+                        className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
+                      >
+                        Get Started
+                      </SheetClose>
+                    </>
+                  ))}
               </SheetFooter>
             </SheetContent>
           </Sheet>

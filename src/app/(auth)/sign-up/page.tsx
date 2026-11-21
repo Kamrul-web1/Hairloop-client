@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import type { UserRole } from "@/lib/user-role";
+import { useRouter } from "next/navigation";
 
 const fieldClassName =
   "h-11 w-full rounded-lg border border-white/10 bg-black/40 px-3.5 pl-10 text-sm text-white outline-none transition-colors placeholder:text-white/35 focus:border-primary/60 focus:ring-2 focus:ring-primary/30";
@@ -28,7 +29,7 @@ const roleOptions: { value: UserRole; label: string; icon: React.ElementType }[]
 export default function SignUpPage() {
     const [showPassword, setShowPassword] = React.useState(false);
     const [role, setRole] = React.useState<UserRole>("seeker");
-
+const router = useRouter()
 
 const hendelSingup = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
@@ -71,6 +72,10 @@ const hendelSingup = async (event: React.FormEvent<HTMLFormElement>) => {
   }
 
   console.log("Signup successful:", signUpResponse);
+
+if (signUpResponse?.user) {
+  window.location.href = "/";
+}
 };
 
 

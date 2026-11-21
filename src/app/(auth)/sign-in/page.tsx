@@ -2,26 +2,38 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRightIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 const fieldClassName =
   "h-11 w-full rounded-lg border border-white/10 bg-black/40 px-3.5 pl-10 text-sm text-white outline-none transition-colors placeholder:text-white/35 focus:border-primary/60 focus:ring-2 focus:ring-primary/30";
 
 export default function SignInPage() {
   const [showPassword, setShowPassword] = React.useState(false);
-  const [collected, setCollected] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const router = useRouter();
 
-  /**
-   * Placeholder handler: only collects the form data.
-   * Swap the console.log for the real sign-in call when wiring up auth.
-   */
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = Object.fromEntries(
-      new FormData(event.currentTarget).entries(),
-    );
-    console.log("[sign-in] collected form data:", data);
-    setCollected(true);
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    setErrorMessage(null);
+
+    const { error } = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    if (error) {
+      setErrorMessage(error.message || "Unable to sign in. Please try again.");
+      return;
+    }
+
+    router.push("/");
   }
 
   return (
@@ -120,12 +132,12 @@ export default function SignInPage() {
             </button>
           </form>
 
-          {collected ? (
+          {errorMessage ? (
             <p
               role="status"
               className="mt-4 text-center text-xs text-white/45"
             >
-              Form data collected — see the console for the payload.
+              {errorMessage}
             </p>
           ) : null}
 
