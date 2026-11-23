@@ -108,6 +108,7 @@ export function Dashbordsidbar() {
             alt="HireLoop"
             width={154}
             height={44}
+            loading="eager"
             className="h-8 w-auto"
           />
         </div>

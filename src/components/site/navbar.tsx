@@ -41,6 +41,7 @@ const navLinks = [
   { href: "/jobs", label: "Browse Jobs" },
   { href: "/companies", label: "Companies" },
   { href: "/pricing", label: "Pricing" },
+  { href: `/dashboard${sssion}`, label: "Dashbord" },
 ] as const;
 
 function Logo({ className }: { className?: string }) {
