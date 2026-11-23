@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -22,6 +22,7 @@ import {
   FileTextIcon,
   LayoutGridIcon,
   LogOutIcon,
+  PlusCircle,
   SettingsIcon,
   UsersIcon,
   WalletIcon,
@@ -43,14 +44,20 @@ const menuItemsByRole: Record<DashboardRole, SidebarMenuItemData[]> = {
     { id: "seeker-saved-jobs", name: "Saved Jobs", url: "/dashboard/seeker/saved", icon: BookmarkIcon },
     { id: "seeker-applications", name: "Applications", url: "/dashboard/seeker/applications", icon: FileTextIcon },
     { id: "seeker-billing", name: "Billing", url: "/dashboard/seeker/billing", icon: WalletIcon },
+    { id: "seeker-add-jobs", name: "Add jobs", url: "/dashboard/recruiter/jobs/new", icon: WalletIcon },
     { id: "seeker-settings", name: "Settings", url: "/dashboard/seeker/settings", icon: SettingsIcon },
   ],
-  recruiter: [
-    { id: "recruiter-dashboard", name: "Dashboard", url: "/dashboard/recruiter", icon: LayoutGridIcon },
-    { id: "recruiter-manage-jobs", name: "Manage Jobs", url: "/dashboard/recruiter/jobs", icon: BriefcaseBusinessIcon },
-    { id: "recruiter-applications", name: "Applications", url: "/dashboard/recruiter/applications", icon: FileTextIcon },
-    { id: "recruiter-settings", name: "Settings", url: "/dashboard/recruiter/settings", icon: SettingsIcon },
-  ],
+recruiter: [
+  { id: "recruiter-dashboard", name: "Dashboard", url: "/dashboard/recruiter", icon: LayoutGridIcon },
+
+  { id: "recruiter-manage-jobs", name: "Manage Jobs", url: "/dashboard/recruiter/jobs", icon: BriefcaseBusinessIcon },
+
+  { id: "add-jobs", name: "Add Jobs", url: "/dashboard/recruiter/jobs/new", icon: PlusCircle },
+
+  { id: "recruiter-applications", name: "Applications", url: "/dashboard/recruiter/applications", icon: FileTextIcon },
+
+  { id: "recruiter-settings", name: "Settings", url: "/dashboard/recruiter/settings", icon: SettingsIcon },
+],
   admin: [
     { id: "admin-dashboard", name: "Dashboard", url: "/dashboard/admin", icon: LayoutGridIcon },
     { id: "admin-users", name: "Users", url: "/dashboard/admin/users", icon: UsersIcon },

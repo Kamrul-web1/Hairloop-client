@@ -35,16 +35,15 @@ import {
   LogOutIcon,
   MenuIcon,
   SettingsIcon,
+  
 } from "lucide-react";
 
-const navLinks = [
-  { href: "/jobs", label: "Browse Jobs" },
-  { href: "/companies", label: "Companies" },
-  { href: "/pricing", label: "Pricing" },
-  { href: `/dashboard${sssion}`, label: "Dashbord" },
-] as const;
+
+
+
 
 function Logo({ className }: { className?: string }) {
+ 
   return (
     <Link href="/" aria-label="HireLoop home" className={className}>
       <Image
@@ -187,13 +186,29 @@ function AuthActions({ className }: { className?: string }) {
 }
 
 export function Navbar() {
+
+
   const pathname = usePathname();
   const { data: session, isPending } = useSession();
-console.log("Navbar Session:", session);
-console.log("Session Pending:", isPending);
+// console.log("Navbar Session:", session);
+// console.log("Session Pending:", isPending);
 
   const isLoggedIn = !!session?.user;
 
+const navLinks = [
+  { href: "/jobs", label: "Browse Jobs" },
+  { href: "/companies", label: "Companies" },
+  { href: "/pricing", label: "Pricing" },
+  {
+    href:
+      session?.user?.role === "admin"
+        ? "/dashboard/admin"
+        : session?.user?.role === "recruiter"
+        ? "/dashboard/recruiter"
+        : "/dashboard/seeker",
+    label: "Dashboard",
+  },
+] as const;
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:h-17 sm:px-6">
