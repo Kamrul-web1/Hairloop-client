@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { createJob } from "@/lib/action/jobs";
 
 /* ── Option lists ─────────────────────────────────────── */
 
@@ -45,7 +46,7 @@ const FREQUENCIES = ["PKR/Hour", "PKR/Day", "PKR/Month", "PKR/Year"];
 
 /* ── Form state (one flat object, all strings) ────────── */
 
-type NewJobForm = {
+ export type NewJobForm = {
   title: string;
   company: string;
   category: string;
@@ -265,7 +266,11 @@ export default function NewJobPage() {
     // Plain-object payload — easy to POST to an API later.
     console.log("New job data:", form);
     router.push("/dashboard/recruiter/jobs");
+     const result = createJob(form)
   };
+
+ 
+
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-6">
