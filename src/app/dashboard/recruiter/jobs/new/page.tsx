@@ -27,6 +27,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { createJob } from "@/lib/action/jobs";
+import { toast } from "@/components/ui/toast";
 
 /* ── Option lists ─────────────────────────────────────── */
 
@@ -59,6 +60,8 @@ const FREQUENCIES = ["PKR/Hour", "PKR/Day", "PKR/Month", "PKR/Year"];
   frequency: string;
   responsibilities: string;
   qualifications: string;
+   applicants: number;
+  status: "Active" | "Expired";
 };
 
 const initialForm: NewJobForm = {
@@ -74,6 +77,8 @@ const initialForm: NewJobForm = {
   frequency: "PKR/Hour",
   responsibilities: "",
   qualifications: "",
+  applicants:0,
+  status:'Active'
 };
 
 /* ── Small building blocks ────────────────────────────── */
@@ -261,19 +266,26 @@ export default function NewJobPage() {
   const set = <K extends keyof NewJobForm>(key: K, value: NewJobForm[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+   
     // Plain-object payload — easy to POST to an API later.
     console.log("New job data:", form);
     router.push("/dashboard/recruiter/jobs");
-     const result = createJob(form)
+     const result = await createJob(form);
+     if(result){
+ toast.add({
+        title: "job created",
+        description: "The job has been succesfully",
+      });
+     }
   };
 
  
 
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-6">
+    <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-6">
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
@@ -476,8 +488,8 @@ export default function NewJobPage() {
             />
           </div>
         </SectionCard>
-        <section>
-                <Button type="submit" size="lg" className="shrink-0 gap-1.5">
+        <section className="sm:flex sm:justify-end">
+          <Button type="submit" size="lg" className="w-full gap-1.5 sm:w-auto">
             Publish Job
             <ArrowRightIcon className="size-4" />
           </Button>
